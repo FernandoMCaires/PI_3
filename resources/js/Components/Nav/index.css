@@ -1,0 +1,4 @@
+.lista-categorias{
+    display: flex;
+    justify-content: space-around;
+}
