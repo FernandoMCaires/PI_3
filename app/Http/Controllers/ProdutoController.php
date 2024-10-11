@@ -17,14 +17,14 @@ class ProdutoController extends Controller
 
     public function show($id): JsonResponse
     {
-        // Busca o produto pelo ID
+        // Busca um produto pelo ID
         $produto = Produto::find($id); // find() retorna null se não encontrar
 
         if ($produto) {
             return response()->json($produto);
         }
 
-        return response()->json(['message' => 'Produto não encontrado'], 404);
+        return response()->json(['Aviso:' => 'Produto não encontrado'], 404);
     }
 
     public function getProdutosPorCategoria($categoriaId): JsonResponse

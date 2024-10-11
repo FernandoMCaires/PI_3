@@ -9,4 +9,9 @@ class Categoria extends Model
 {
     use HasFactory;
     protected $table = 'CATEGORIA';
+
+    public function produtos() 
+    {
+        return $this->hasMany(Produto::class, 'CATEGORIA_ID');
+    }
 }
