@@ -22,6 +22,8 @@ Route::post('/carrinho/adicionar', [CarrinhoController::class, 'adicionarNoCarri
 Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho']); // Rota para ver itens no carrinho
 Route::delete('/carrinho/remover/{produtoId}', [CarrinhoController::class, 'removerDoCarrinho']); // Rota para remover produto do carrinho
 
+//Cadastro Endereço
+
 //Pedido -> Aqui são os dados do pedido 
 
 //Pedido Item -> Aqui vem os pedidos, no caso, chama os produtos, quantidades e preços, e o preço total

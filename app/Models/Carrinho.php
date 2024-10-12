@@ -13,7 +13,6 @@ class Carrinho extends Model
     protected $table = 'CARRINHO_ITEM';
 
     protected $fillable = [
-        'USUARIO_ID',
         'PRODUTO_ID',
         'ITEM_QTD'
     ];

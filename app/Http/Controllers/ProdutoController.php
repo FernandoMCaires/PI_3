@@ -6,6 +6,7 @@ use App\Models\Produto;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+
 class ProdutoController extends Controller
 {
     public function index(): JsonResponse
@@ -17,8 +18,8 @@ class ProdutoController extends Controller
 
     public function show($id): JsonResponse
     {
-        // Busca um produto pelo ID
-        $produto = Produto::find($id); // find() retorna null se não encontrar
+        // Busca um produto pelo ID junto da sua imagem já
+        $produto = Produto::with('imagens')->find($id);
 
         if ($produto) {
             return response()->json($produto);
