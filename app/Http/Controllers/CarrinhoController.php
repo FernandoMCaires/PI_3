@@ -40,7 +40,7 @@ class CarrinhoController extends Controller
     //Exibe os itens no carrinho
 
     public function verCarrinho(){
-        $itemCarrinho = Carrinho::where('USUARIO_ID', session()->getId())->with('PRODUTO_ID')->get(); 
+        $itemCarrinho = Carrinho::where('USUARIO_ID', session()->getId())->with('PRODUTO_ID')->get();
 
 
         $totalCarrinho = $itemCarrinho->sum(function($item){

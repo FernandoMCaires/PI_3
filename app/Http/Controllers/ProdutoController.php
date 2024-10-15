@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Produto; 
+use App\Models\Produto;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -12,8 +12,8 @@ class ProdutoController extends Controller
     public function index(): JsonResponse
     {
         // Retorna todos os produtos
-        $produtos = Produto::all();
-        return response()->json($produtos); 
+        $produtos = Produto::with('imagens')->get();
+        return response()->json($produtos);
     }
 
     public function show($id): JsonResponse
@@ -31,7 +31,9 @@ class ProdutoController extends Controller
     public function getProdutosPorCategoria($categoriaId): JsonResponse
     {
         //Basicamente na model de Produto, ele procura CATEGORIA_ID e atribui nessa variavel $categoriaId e retorna Produtos por Categoria
-        $produtos = Produto::where('CATEGORIA_ID', $categoriaId)->get(); 
-        return response()->json($produtos); 
+        $produtos = Produto::with('imagens')
+        ->where('CATEGORIA_ID', $categoriaId)
+        ->get();
+        return response()->json($produtos);
     }
 }
