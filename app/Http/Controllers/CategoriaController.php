@@ -1,13 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Resources\CategoriaResource;
 use App\Models\Categoria;
-use Illuminate\Http\Request;
+
 
 class CategoriaController extends Controller
 {
-    public function index(){
-        $categorias = Categoria::all();
+
+
+    public function index()
+    {
+        $categorias = CategoriaResource::collection(Categoria::all());
         return response()->json($categorias);
     }
-}   
+}
