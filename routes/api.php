@@ -5,28 +5,33 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\CarrinhoController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
-//Usuario - cadastro cliente
+// Rotas abertas (públicas)
+Route::post('/register', [RegisteredUserController::class, 'store'])
+    ->middleware('guest')
+    ->name('register');
 
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest')
+    ->name('login');
 
-// Produtos
 Route::get('/produtos', [ProdutoController::class, 'index']);
 Route::get('/produtos/{id}', [ProdutoController::class, 'show']);
-Route::get('/produtos/categoria/{categoriaId}', [ProdutoController::class, 'getProdutosPorCategoria']); // Rota para obter produtos por categoria
+Route::get('/categorias', [CategoriaController::class, 'index']);
 
-// Categorias
-Route::get('/categorias', [CategoriaController::class, 'index']);//Rota para listar as categorias
+// Rotas protegidas (requere autenticação)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-// Carrinho -> esta sendo testado ainda
-Route::post('/carrinho/adicionar', [CarrinhoController::class, 'adicionarNoCarrinho']); // Rota para adicionar produto no carrinho
-Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho']); // Rota para ver itens no carrinho
-Route::delete('/carrinho/remover/{produtoId}', [CarrinhoController::class, 'removerDoCarrinho']); // Rota para remover produto do carrinho
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
 
-//Cadastro Endereço
-
-//Pedido -> Aqui são os dados do pedido 
-
-//Pedido Item -> Aqui vem os pedidos, no caso, chama os produtos, quantidades e preços, e o preço total
-
-//Pedido Status
-
+    // Rotas de Carrinho e Pedidos aqui
+    Route::post('/carrinho/adicionar', [CarrinhoController::class, 'adicionarNoCarrinho']);
+    Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho']);
+    Route::delete('/carrinho/remover/{produtoId}', [CarrinhoController::class, 'removerDoCarrinho']);
+});

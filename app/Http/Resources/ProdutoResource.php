@@ -19,15 +19,17 @@ class ProdutoResource extends JsonResource
             'nome' => $this->PRODUTO_NOME,
             'desc' => $this->PRODUTO_DESC,
             'preco' => $this->PRODUTO_PRECO,
-            'preco' => $this->PRODUTO_DESCONTO,
+            'desconto' => $this->PRODUTO_DESCONTO,
             'categoriaId' => $this->CATEGORIA_ID,
             'ativo' => $this->PRODUTO_ATIVO,
-            'imagens' => [
-                'img_id' => $this->IMAGEM_ID,
-                'img_ordem' => $this->IMAGEM_ORDEM,
-                'produto_id' => $this->PRODUTO_ID,
-                'img_url' => $this->IMAGEM_URL
-            ]
+            'imagens' => $this->imagens->map(function($imagem) {
+                return [
+                    'img_id' => $imagem->IMAGEM_ID,
+                    'img_ordem' => $imagem->IMAGEM_ORDEM,
+                    'produto_id' => $imagem->PRODUTO_ID,
+                    'img_url' => $imagem->IMAGEM_URL
+                ];
+            }),
         ];
 
         return $produto;
