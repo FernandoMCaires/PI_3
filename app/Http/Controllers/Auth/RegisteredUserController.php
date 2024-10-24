@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
+
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -38,6 +40,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user); // Faz login após o registro
 
+        // Retorne o usuário como JSON
         return response()->json(['user' => $user], 201);
     }
 }

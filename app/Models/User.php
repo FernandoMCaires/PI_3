@@ -36,4 +36,8 @@ class User extends Authenticatable
     {
         return $this->USUARIO_SENHA;
     }
+
+    public function enderecos(){
+        return $this->hasMany(Endereco::class, 'USUARIO_ID');
+    }
 }

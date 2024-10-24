@@ -25,7 +25,8 @@ class AuthenticatedSessionController extends Controller
         Auth::login($user);
 
         // Se tudo estiver correto, retorna os dados do usuário
-        return response()->json(['user' => $user], 200);
+        // Exemplo de retorno no store do AuthenticatedSessionController
+        return response()->json(['user' => $user], 200)->cookie('session_cookie', session()->getId(), 120);
     }
 
     public function destroy(Request $request): JsonResponse
@@ -33,13 +34,15 @@ class AuthenticatedSessionController extends Controller
         // Verifica se o usuário está autenticado
         if (Auth::check()) {
             Auth::logout(); // Faz o logout do usuário
-    
+
             return response()->json(['message' => 'Logged out successfully'], 200);
         }
-    
+
         return response()->json(['message' => 'No user is logged in'], 401);
     }
-    
 
+    public function user(Request $request): JsonResponse
+    {
+        return response()->json(['user' => Auth::user()], 200);
+    }
 }
-
