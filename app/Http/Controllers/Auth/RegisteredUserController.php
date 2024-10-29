@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -12,28 +11,22 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): JsonResponse
     {
         $cpf = preg_replace('/\D/', '', $request->cpf);
 
         $user = User::create([
-            'USUARIO_NOME' => $request->name,
-            'USUARIO_EMAIL' => $request->email,
+            'USUARIO_NOME' => $request->input('name'),
+            'USUARIO_EMAIL' => $request->input('email'),
             'USUARIO_CPF' => $cpf,
             'USUARIO_SENHA' => Hash::make($request->input('password'))
         ]);
 
+
         event(new Registered($user));
 
-        // Gerar o token JWT para o usuário registrado
         $token = JWTAuth::fromUser($user);
 
-        // Retorne o usuário e o token como JSON
         return response()->json(['user' => $user, 'token' => $token], 201);
     }
 }
