@@ -7,9 +7,8 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RegisteredUserController extends Controller
 {
@@ -20,13 +19,6 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:USUARIO,USUARIO_EMAIL'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'cpf' => ['required', 'string', 'max:11']
-        ]);
-
         $cpf = preg_replace('/\D/', '', $request->cpf);
 
         $user = User::create([
@@ -38,9 +30,10 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user); // Faz login após o registro
+        // Gerar o token JWT para o usuário registrado
+        $token = JWTAuth::fromUser($user);
 
-        // Retorne o usuário como JSON
-        return response()->json(['user' => $user], 201);
+        // Retorne o usuário e o token como JSON
+        return response()->json(['user' => $user, 'token' => $token], 201);
     }
 }

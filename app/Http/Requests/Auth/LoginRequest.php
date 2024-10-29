@@ -2,16 +2,11 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
-
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
@@ -25,8 +20,6 @@ class LoginRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     public function rules(): array
     {
@@ -37,54 +30,21 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * Attempt to authenticate the request's credentials and return JWT token.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(): void
-{
-    $user = User::where('USUARIO_EMAIL', $this->email)->first();
-
-    if (!$user || !Hash::check($this->password, $user->USUARIO_SENHA)) {
-        RateLimiter::hit($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'email' => __('auth.failed'),
-        ]);
-    }
-
-    RateLimiter::clear($this->throttleKey());
-}
-
-
-    /**
-     * Ensure the login request is not rate limited.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function ensureIsNotRateLimited(): void
+    public function authenticate(): string
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
+        $user = User::where('USUARIO_EMAIL', $this->email)->first();
+
+        if (!$user || !Hash::check($this->password, $user->USUARIO_SENHA)) {
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
         }
 
-        event(new Lockout($this));
-
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
-    }
-
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
-    public function throttleKey(): string
-    {
-        return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
+        // Gerar o token JWT para o usuário autenticado
+        return JWTAuth::fromUser($user);
     }
 }

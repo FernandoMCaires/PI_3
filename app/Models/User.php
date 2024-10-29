@@ -2,21 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject // Implementa a interface JWTSubject
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $table = 'USUARIO';
     protected $primaryKey = 'USUARIO_ID';
     public $timestamps = false;
@@ -37,7 +31,20 @@ class User extends Authenticatable
         return $this->USUARIO_SENHA;
     }
 
-    public function enderecos(){
+    public function enderecos()
+    {
         return $this->hasMany(Endereco::class, 'USUARIO_ID');
+    }
+
+    // Implementa o método getJWTIdentifier
+    public function getJWTIdentifier()
+    {
+        return $this->getKey(); // Retorna o ID do usuário
+    }
+
+    // Implementa o método getJWTCustomClaims
+    public function getJWTCustomClaims()
+    {
+        return []; // Retorna um array de dados personalizados, se necessário
     }
 }

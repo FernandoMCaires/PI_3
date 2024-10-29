@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -21,28 +20,28 @@ class AuthenticatedSessionController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        // Faz login do usuário e mantém a sessão
-        Auth::login($user);
+        // Gera o token JWT para o usuário
+        $token = JWTAuth::fromUser($user);
 
-        // Se tudo estiver correto, retorna os dados do usuário
-        // Exemplo de retorno no store do AuthenticatedSessionController
-        return response()->json(['user' => $user], 200)->cookie('session_cookie', session()->getId(), 120);
+        // Retorna o token junto com as informações do usuário
+        return response()->json(['user' => $user, 'token' => $token], 200);
     }
 
-    public function destroy(Request $request): JsonResponse
+    public function destroy(): JsonResponse
     {
-        // Verifica se o usuário está autenticado
-        if (Auth::check()) {
-            Auth::logout(); // Faz o logout do usuário
-
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
             return response()->json(['message' => 'Logged out successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to log out, invalid token'], 500);
         }
-
-        return response()->json(['message' => 'No user is logged in'], 401);
     }
 
-    public function user(Request $request): JsonResponse
+    public function user(): JsonResponse
     {
-        return response()->json(['user' => Auth::user()], 200);
+        $user = JWTAuth::parseToken()->authenticate();
+
+        return response()->json(['user' => $user], 200);
     }
 }
+
