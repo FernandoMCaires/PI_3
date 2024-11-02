@@ -16,7 +16,11 @@ class AuthenticatedSessionController extends Controller
         // Verifica se o usuário existe e se a senha está correta
         $user = User::where('USUARIO_EMAIL', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->USUARIO_SENHA)) {
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        if ($user->USUARIO_SENHA !==  $request->password) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
@@ -44,4 +48,3 @@ class AuthenticatedSessionController extends Controller
         return response()->json(['user' => $user], 200);
     }
 }
-
