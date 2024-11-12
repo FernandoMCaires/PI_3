@@ -11,7 +11,7 @@ class Endereco extends Model
     protected $table = 'ENDERECO';
     protected $primaryKey = 'ENDERECO_ID';
     public $foreignKey = 'USUARIO_ID';
-
+    public $timestamps = false;
     //Definindo os campos que podem ser preenchidos
     protected $fillable = [
         'ENDERECO_NOME',

@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -39,7 +40,12 @@ class AuthenticatedSessionController extends Controller
 
     public function user(): JsonResponse
     {
-        $user = JWTAuth::parseToken()->authenticate();
+        if (Auth::check()) {
+            $usuarioId = Auth::id();
+            $user = User::find($usuarioId);
+        } else {
+            return response()->json(['error' => 'Usuário não autenticado'], 401);
+        }
 
         return response()->json(['user' => $user], 200);
     }

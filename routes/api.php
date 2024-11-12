@@ -7,6 +7,7 @@ use App\Http\Controllers\CarrinhoController;
 use App\Http\Controllers\EnderecoController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\PedidoController;
 
 // Registro de novo usuário
 Route::post('/register', [RegisteredUserController::class, 'store']);
@@ -25,7 +26,7 @@ Route::get('/produtos/{id}', [ProdutoController::class, 'show']);
 Route::get('/categorias', [CategoriaController::class, 'index']);
 
 // Rotas protegidas (requere autenticação)
-Route::middleware(['auth:api'])->group(function () {
+Route::middleware('auth:api')->group(function () {
     // Rotas de Endereco
     Route::apiResource('/endereco', EnderecoController::class);
 
@@ -33,4 +34,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/carrinho/adicionar', [CarrinhoController::class, 'adicionarNoCarrinho']);
     Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho']);
     Route::delete('/carrinho/remover/{produtoId}', [CarrinhoController::class, 'removerDoCarrinho']);
+    Route::middleware('auth:api')->post('/pedido/finalizar', [PedidoController::class, 'finalizarPedido']);
 });
