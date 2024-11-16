@@ -13,14 +13,14 @@ class ProdutoController extends Controller
     public function index(): JsonResponse
     {
         // Retorna todos os produtos
-        $produtos = ProdutoResource::collection(Produto::with('imagens')->get());
+        $produtos = ProdutoResource::collection(Produto::with('imagens', 'estoque')->get());
         return response()->json($produtos);
     }
 
     public function show($id): JsonResponse
     {
         // Busca um produto pelo ID junto da sua imagem já
-        $produto = ProdutoResource::collection(Produto::with('imagens')->find($id));
+        $produto = ProdutoResource::collection(Produto::with('imagens', 'estoque')->find($id));
 
         if ($produto) {
             return response()->json($produto);
@@ -32,7 +32,7 @@ class ProdutoController extends Controller
     public function getProdutosPorCategoria($categoriaId): JsonResponse
     {
         //Basicamente na model de Produto, ele procura CATEGORIA_ID e atribui nessa variavel $categoriaId e retorna Produtos por Categoria
-        $produtos = ProdutoResource::collection(Produto::with('imagens')
+        $produtos = ProdutoResource::collection(Produto::with('imagens', 'estoque')
             ->where('CATEGORIA_ID', $categoriaId)
             ->get());
         return response()->json($produtos);
