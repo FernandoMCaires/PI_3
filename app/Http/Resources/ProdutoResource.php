@@ -22,7 +22,7 @@ class ProdutoResource extends JsonResource
             'desconto' => $this->PRODUTO_DESCONTO,
             'categoriaId' => $this->CATEGORIA_ID,
             'ativo' => $this->PRODUTO_ATIVO,
-            'imagens' => $this->imagens->map(function($imagem) {
+            'imagens' => $this->imagens->map(function ($imagem) {
                 return [
                     'img_id' => $imagem->IMAGEM_ID,
                     'img_ordem' => $imagem->IMAGEM_ORDEM,
@@ -30,6 +30,13 @@ class ProdutoResource extends JsonResource
                     'img_url' => $imagem->IMAGEM_URL
                 ];
             }),
+            'estoque' => $this->estoque->map(function ($estoque) {
+                return [
+                    'produto_id' => $estoque->PRODUTO_ID,
+                    'produto_qtd' => $estoque->PRODUTO_QTD,
+
+                ];
+            })
         ];
 
         return $produto;
