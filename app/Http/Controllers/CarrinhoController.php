@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 class CarrinhoController extends Controller
 {
-    // Adiciona um produto no carrinho do cliente
-    public function adicionarNoCarrinho(Request $request)
+    // Adiciona um produto ao carrinho
+    public function adicionarAoCarrinho(Request $request)
     {
         $produtoId = $request->input('PRODUTO_ID');
         $quantidade = $request->input('ITEM_QTD', 1);
@@ -35,7 +35,7 @@ class CarrinhoController extends Controller
 
         if ($itemCarrinho) {
             // Atualiza a quantidade do produto existente
-            $itemCarrinho->ITEM_QTD = $quantidade;
+            $itemCarrinho->ITEM_QTD += $quantidade;
             $itemCarrinho->save();
         } else {
             // Adiciona um novo item ao carrinho
@@ -115,31 +115,27 @@ class CarrinhoController extends Controller
         return response()->json(['mensagem' => 'Produto não encontrado no carrinho'], 404);
     }
 
-    // Adiciona um produto ao carrinho
-    public function adicionarAoCarrinho(Request $request)
+    // Edita a quantidade de um produto no carrinho
+    public function editarQuantidadeNoCarrinho(Request $request, $produtoId)
     {
+        $novaQuantidade = $request->input('ITEM_QTD');
+
+        // Use o ID do usuário autenticado
         $usuarioId = Auth::id();
-        $produtoId = $request->input('produto_id');
-        $quantidade = $request->input('quantidade', 1);
 
-        // Verifica se o produto já está no carrinho
-        $itemExistente = Carrinho::where('USUARIO_ID', $usuarioId)
-                                 ->where('PRODUTO_ID', $produtoId)
-                                 ->first();
+        // Verifica se o produto está no carrinho
+        $itemCarrinho = Carrinho::where('USUARIO_ID', $usuarioId)
+                                ->where('PRODUTO_ID', $produtoId)
+                                ->first();
 
-        if ($itemExistente) {
-            // Incrementa a quantidade do produto existente
-            $itemExistente->ITEM_QTD += $quantidade;
-            $itemExistente->save();
-        } else {
-            // Adiciona um novo item ao carrinho
-            Carrinho::create([
-                'USUARIO_ID' => $usuarioId,
-                'PRODUTO_ID' => $produtoId,
-                'ITEM_QTD' => $quantidade,
-            ]);
+        if ($itemCarrinho) {
+            // Atualiza a quantidade do produto existente
+            $itemCarrinho->ITEM_QTD = $novaQuantidade;
+            $itemCarrinho->save();
+
+            return response()->json(['mensagem' => 'Quantidade do produto atualizada com sucesso!', 'carrinho' => $itemCarrinho]);
         }
 
-        return response()->json(['message' => 'Produto adicionado ao carrinho com sucesso.']);
+        return response()->json(['mensagem' => 'Produto não encontrado no carrinho'], 404);
     }
 }
