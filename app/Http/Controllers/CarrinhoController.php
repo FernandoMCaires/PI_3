@@ -28,16 +28,23 @@ class CarrinhoController extends Controller
         // Use o ID do usuário autenticado
         $usuarioId = Auth::id();
 
-        // Adiciona ou atualiza o produto que está no carrinho
-        $itemCarrinho = Carrinho::updateOrCreate(
-            [
+        // Verifica se o produto já está no carrinho
+        $itemCarrinho = Carrinho::where('USUARIO_ID', $usuarioId)
+                                ->where('PRODUTO_ID', $produtoId)
+                                ->first();
+
+        if ($itemCarrinho) {
+            // Atualiza a quantidade do produto existente
+            $itemCarrinho->ITEM_QTD = $quantidade;
+            $itemCarrinho->save();
+        } else {
+            // Adiciona um novo item ao carrinho
+            $itemCarrinho = Carrinho::create([
                 'USUARIO_ID' => $usuarioId,
-                'PRODUTO_ID' => $produtoId
-            ],
-            [
-                'ITEM_QTD' => $quantidade
-            ]
-        );
+                'PRODUTO_ID' => $produtoId,
+                'ITEM_QTD' => $quantidade,
+            ]);
+        }
 
         return response()->json(['mensagem' => 'Produto adicionado ao carrinho!', 'carrinho' => $itemCarrinho]);
     }
