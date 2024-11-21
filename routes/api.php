@@ -31,7 +31,7 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('/endereco', EnderecoController::class);
 
     // Rotas de Carrinho e Pedidos
-    Route::post('/carrinho/adicionar', [CarrinhoController::class, 'adicionarNoCarrinho']);
+    Route::post('/carrinho/atualiza', [CarrinhoController::class, 'atualizaCarrinho']);
     Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho']);
     Route::delete('/carrinho/remover/{produtoId}', [CarrinhoController::class, 'removerDoCarrinho']);
     Route::middleware('auth:api')->post('/pedido/finalizar', [PedidoController::class, 'finalizarPedido']);

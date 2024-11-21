@@ -17,7 +17,7 @@ class Carrinho extends Model
 
     public $incrementing = false;
 
-    protected $keyType = 'string';
+    
 
     protected $fillable = [
         'USUARIO_ID',
@@ -37,7 +37,8 @@ class Carrinho extends Model
         // Verifica se o item já existe no carrinho para o usuário
         $itemExistente = CarrinhoItem::where('USUARIO_ID', $usuarioId)
                                      ->where('PRODUTO_ID', $produtoId)
-                                     ->first();
+                                        ->first()
+                                        ->get();
 
         if ($itemExistente) {
             // Log antes do incremento

@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 class CarrinhoController extends Controller
 {
-    // Adiciona um produto ao carrinho
-    public function adicionarAoCarrinho(Request $request)
+    // Método para adicionar um produto ao carrinho ou atualizar a quantidade
+    public function atualizaCarrinho(Request $request)
     {
         $produtoId = $request->input('PRODUTO_ID');
         $quantidade = $request->input('ITEM_QTD', 1);
@@ -30,13 +30,16 @@ class CarrinhoController extends Controller
 
         // Verifica se o produto já está no carrinho
         $itemCarrinho = Carrinho::where('USUARIO_ID', $usuarioId)
-                                ->where('PRODUTO_ID', $produtoId)
-                                ->first();
+            ->where('PRODUTO_ID', $produtoId)
+            ->first();
 
         if ($itemCarrinho) {
-            // Atualiza a quantidade do produto existente
-            $itemCarrinho->ITEM_QTD += $quantidade;
-            $itemCarrinho->save();
+            Carrinho::where('PRODUTO_ID', $produtoId)
+            ->where('USUARIO_ID', $usuarioId)
+            ->update(['ITEM_QTD' => $quantidade]);
+
+        
+            return response()->json(['mensagem' => 'Quantidade atualizada com sucesso!']);
         } else {
             // Adiciona um novo item ao carrinho
             $itemCarrinho = Carrinho::create([
@@ -104,8 +107,8 @@ class CarrinhoController extends Controller
         $usuarioId = Auth::id();
 
         $itemCarrinho = Carrinho::where('USUARIO_ID', $usuarioId)
-                                ->where('PRODUTO_ID', $produtoId)
-                                ->first();
+            ->where('PRODUTO_ID', $produtoId)
+            ->first();
 
         if ($itemCarrinho) {
             $itemCarrinho->delete();
@@ -116,26 +119,21 @@ class CarrinhoController extends Controller
     }
 
     // Edita a quantidade de um produto no carrinho
-    public function editarQuantidadeNoCarrinho(Request $request, $produtoId)
-    {
-        $novaQuantidade = $request->input('ITEM_QTD');
+    // public function editarQuantidadeNoCarrinho(Request $request)
+    // {
+    //     $novaQuantidade = $request->input('ITEM_QTD');
+    //     $produtoId = $request->input('PRODUTO_ID');
 
-        // Use o ID do usuário autenticado
-        $usuarioId = Auth::id();
+    //     // Use o ID do usuário autenticado
+    //     $usuarioId = Auth::id();
 
-        // Verifica se o produto está no carrinho
-        $itemCarrinho = Carrinho::where('USUARIO_ID', $usuarioId)
-                                ->where('PRODUTO_ID', $produtoId)
-                                ->first();
+    //     $itemcarrinho = Carrinho::where('PRODUTO_ID', $produtoId)
+    //         ->where('USUARIO_ID', $usuarioId)
+    //         ->update(['ITEM_QTD' => $novaQuantidade]);
 
-        if ($itemCarrinho) {
-            // Atualiza a quantidade do produto existente
-            $itemCarrinho->ITEM_QTD = $novaQuantidade;
-            $itemCarrinho->save();
-
-            return response()->json(['mensagem' => 'Quantidade do produto atualizada com sucesso!', 'carrinho' => $itemCarrinho]);
-        }
-
-        return response()->json(['mensagem' => 'Produto não encontrado no carrinho'], 404);
-    }
+    //     if ($itemcarrinho) {
+    //         return response()->json(['mensagem' => 'Quantidade atualizada com sucesso!']);
+    //     }
+    //     return response()->json(['mensagem' => 'Produto não encontrado no carrinho'], 404);
+    // }
 }
