@@ -27,6 +27,8 @@ Route::get('/categorias', [CategoriaController::class, 'index']);
 
 // Rotas protegidas (requere autenticação)
 Route::middleware('auth:api')->group(function () {
+    //editar dados do usuario
+  
     // Rotas de Endereco
     Route::apiResource('/endereco', EnderecoController::class);
 
@@ -35,4 +37,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho']);
     Route::delete('/carrinho/remover/{produtoId}', [CarrinhoController::class, 'removerDoCarrinho']);
     Route::middleware('auth:api')->post('/pedido/finalizar', [PedidoController::class, 'finalizarPedido']);
+
+    // Rota para editar dados do usuário
+    Route::put('/user', [AuthenticatedSessionController::class, 'update']);
 });

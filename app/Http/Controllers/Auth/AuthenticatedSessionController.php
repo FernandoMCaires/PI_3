@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -48,6 +49,19 @@ class AuthenticatedSessionController extends Controller
         }
 
         return response()->json(['user' => $user], 200);
+    }
+
+    public function update(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+
+        if ($user instanceof \App\Models\User) {
+            $user->fill($request->all());
+            $user->save();
+            return response()->json($user, 200);
+        }
+
+        return response()->json(['error' => 'Usuário não encontrado'], 404);
     }
 }
 
