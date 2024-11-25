@@ -33,11 +33,13 @@ class PedidoController extends Controller
             'STATUS_ID' => 1,
             'PEDIDO_DATA' => now(),
         ]);
-
+        $pedidoId = $pedido->id;
+        
+        
         // Crie os itens do pedido
         foreach ($itensCarrinho as $item) {
             PedidoItem::create([
-                'PEDIDO_ID' => $pedido->PEDIDO_ID,
+                'PEDIDO_ID' => $pedidoId,
                 'PRODUTO_ID' => $item->PRODUTO_ID,
                 'ITEM_QTD' => $item->ITEM_QTD,
                 'ITEM_PRECO' => $item->produto->PRODUTO_PRECO,
@@ -47,6 +49,6 @@ class PedidoController extends Controller
         // Limpe o carrinho
         Carrinho::where('USUARIO_ID', $usuarioId)->delete();
 
-        return response()->json(['message' => 'Pedido finalizado com sucesso.', 'pedido_id' => $pedido->PEDIDO_ID]);
+        return response()->json(['message' => 'Pedido finalizado com sucesso.', 'pedido_id' => $pedidoId, 'total' => $totalPedido], 201);
     }
 } 

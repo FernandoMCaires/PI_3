@@ -20,27 +20,27 @@ class EnderecoController extends Controller
     {
         $userId = Auth::id();
         $request->validate([
-            'ENDERECO_NOME' => 'required|string|max:255',
-            'ENDERECO_LOGRADOURO' => 'required|string|max:255',
-            'ENDERECO_NUMERO' => 'required|string|max:10',
-            'ENDERECO_COMPLEMENTO' => 'nullable|string|max:255',
-            'ENDERECO_CEP' => 'required|string|max:10',
-            'ENDERECO_CIDADE' => 'required|string|max:255',
-            'ENDERECO_ESTADO' => 'required|string|max:2',
+            'nome' => 'required|string|max:255',
+            'logradouro' => 'required|string|max:255',
+            'numero' => 'required|string|max:10',
+            'complemento' => 'nullable|string|max:255',
+            'cep' => 'required|string|max:10',
+            'cidade' => 'required|string|max:255',
+            'estado' => 'required|string|max:2',
         ]);
 
         $endereco = Endereco::create([
             'USUARIO_ID' => $userId,
-            'ENDERECO_NOME' => $request->input('ENDERECO_NOME'),
-            'ENDERECO_LOGRADOURO' => $request->input('ENDERECO_LOGRADOURO'),
-            'ENDERECO_NUMERO' => $request->input('ENDERECO_NUMERO'),
-            'ENDERECO_COMPLEMENTO' => $request->input('ENDERECO_COMPLEMENTO'),
-            'ENDERECO_CEP' => $request->input('ENDERECO_CEP'),
-            'ENDERECO_CIDADE' => $request->input('ENDERECO_CIDADE'),
-            'ENDERECO_ESTADO' => $request->input('ENDERECO_ESTADO'),
+            'ENDERECO_NOME' => $request->input('logradouro'),
+            'ENDERECO_LOGRADOURO' => $request->input('logradouro'),
+            'ENDERECO_NUMERO' => $request->input('numero'),
+            'ENDERECO_COMPLEMENTO' => $request->input('complemento'),
+            'ENDERECO_CEP' => $request->input('cep'),
+            'ENDERECO_CIDADE' => $request->input('cidade'),
+            'ENDERECO_ESTADO' => $request->input('estado'),
         ]);
 
-        return response()->json(new EnderecoResource($endereco), 201);
+        return response()->json(['message' => 'Endereço adicionado com sucesso' , "endereco" => new EnderecoResource($endereco)], 201);
     }
 
     public function show($id)
@@ -56,13 +56,13 @@ class EnderecoController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'ENDERECO_NOME' => 'sometimes|required|string|max:255',
-            'ENDERECO_LOGRADOURO' => 'sometimes|required|string|max:255',
-            'ENDERECO_NUMERO' => 'sometimes|required|string|max:10',
-            'ENDERECO_COMPLEMENTO' => 'sometimes|nullable|string|max:255',
-            'ENDERECO_CEP' => 'sometimes|required|string|max:10',
-            'ENDERECO_CIDADE' => 'sometimes|required|string|max:255',
-            'ENDERECO_ESTADO' => 'sometimes|required|string|max:2',
+            'nome' => 'sometimes|required|string|max:255',
+            'logradouro' => 'sometimes|required|string|max:255',
+            'numero' => 'sometimes|required|string|max:10',
+            'complemento' => 'sometimes|nullable|string|max:255',
+            'cep' => 'sometimes|required|string|max:10',
+            'cidade' => 'sometimes|required|string|max:255',
+            'estado' => 'sometimes|required|string|max:2',
         ]);
 
         $userId = Auth::id();
@@ -70,7 +70,15 @@ class EnderecoController extends Controller
             ->where('USUARIO_ID', $userId)
             ->firstOrFail();
 
-        $endereco->update($request->all());
+        $endereco->update([
+            'ENDERECO_NOME' => $request->input('nome', $endereco->ENDERECO_NOME),
+            'ENDERECO_LOGRADOURO' => $request->input('logradouro', $endereco->ENDERECO_LOGRADOURO),
+            'ENDERECO_NUMERO' => $request->input('numero', $endereco->ENDERECO_NUMERO),
+            'ENDERECO_COMPLEMENTO' => $request->input('complemento', $endereco->ENDERECO_COMPLEMENTO),
+            'ENDERECO_CEP' => $request->input('cep', $endereco->ENDERECO_CEP),
+            'ENDERECO_CIDADE' => $request->input('cidade', $endereco->ENDERECO_CIDADE),
+            'ENDERECO_ESTADO' => $request->input('estado', $endereco->ENDERECO_ESTADO),
+        ]);
 
         return response()->json(new EnderecoResource($endereco), 200);
     }
