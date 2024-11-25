@@ -51,4 +51,13 @@ class PedidoController extends Controller
 
         return response()->json(['message' => 'Pedido finalizado com sucesso.', 'pedido_id' => $pedidoId, 'total' => $totalPedido], 201);
     }
+
+    public function getPedidos()
+    {
+        $usuarioId = Auth::id();
+        $pedidos = Pedido::where('USUARIO_ID', $usuarioId)
+            ->with('itens')
+            ->get();
+        return response()->json($pedidos, 200);
+    }
 } 

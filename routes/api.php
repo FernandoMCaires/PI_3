@@ -25,18 +25,19 @@ Route::get('/produtos/{id}', [ProdutoController::class, 'show']);
 // Rotas de categorias
 Route::get('/categorias', [CategoriaController::class, 'index']);
 
-// Rotas protegidas (requere autenticação)
+// Rotas protegidas (requerem autenticação)
 Route::middleware('auth:api')->group(function () {
-    //editar dados do usuario
-  
     // Rotas de Endereco
     Route::apiResource('/endereco', EnderecoController::class);
 
-    // Rotas de Carrinho e Pedidos
+    // Rotas de Carrinho
     Route::post('/carrinho/atualiza', [CarrinhoController::class, 'atualizaCarrinho']);
     Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho']);
     Route::delete('/carrinho/remover/{produtoId}', [CarrinhoController::class, 'removerDoCarrinho']);
-    Route::middleware('auth:api')->post('/pedido/finalizar', [PedidoController::class, 'finalizarPedido']);
+
+    // Rotas de Pedidos
+    Route::post('/pedido/finalizar', [PedidoController::class, 'finalizarPedido']);
+    Route::get('/pedidos', [PedidoController::class, 'getPedidos']);
 
     // Rota para editar dados do usuário
     Route::put('/user', [AuthenticatedSessionController::class, 'update']);
