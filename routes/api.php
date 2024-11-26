@@ -37,7 +37,7 @@ Route::middleware('auth:api')->group(function () {
 
     // Rotas de Pedidos
     Route::post('/pedido/finalizar', [PedidoController::class, 'finalizarPedido']);
-    Route::get('/pedidos', [PedidoController::class, 'getPedidos']);
+    Route::get('/pedidos/{pedidoId}/itens', [PedidoController::class, 'getItensPorPedido']);
 
     // Rota para editar dados do usuário
     Route::put('/user', [AuthenticatedSessionController::class, 'update']);

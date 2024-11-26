@@ -52,18 +52,18 @@ class PedidoController extends Controller
         return response()->json(['message' => 'Pedido finalizado com sucesso.', 'pedido_id' => $pedidoId, 'total' => $totalPedido], 201);
     }
 
-    public function getPedidos()
+    public function getItensPorPedido($pedidoId)
     {
         $usuarioId = Auth::id();
 
-        // Obtenha todos os IDs dos pedidos do usuário
-        $pedidoIds = Pedido::where('USUARIO_ID', $usuarioId)->pluck('id');
+        // Encontre o pedido pelo ID e verifique se pertence ao usuário
+        $pedido = Pedido::with('itens')->where('id', $pedidoId)->where('USUARIO_ID', $usuarioId)->first();
 
-        // Obtenha todos os itens de pedido associados aos pedidos do usuário
-        $itensPedido = PedidoItem::whereIn('PEDIDO_ID', $pedidoIds)
-            ->with('produto') // Carrega os produtos associados
-            ->get();
+        if (!$pedido) {
+            return response()->json(['message' => 'Pedido não encontrado ou não pertence ao usuário.'], 404);
+        }
 
-        return response()->json($itensPedido, 200);
+        // Retorne os itens do pedido
+        return response()->json($pedido->itens, 200);
     }
 } 
