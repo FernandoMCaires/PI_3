@@ -66,4 +66,19 @@ class PedidoController extends Controller
         // Retorne os itens do pedido
         return response()->json($pedido->itens, 200);
     }
+
+    public function getPedidos()
+    {
+        $usuarioId = Auth::id();
+
+        // Obtenha todos os pedidos do usuário
+        $pedidos = Pedido::where('USUARIO_ID', $usuarioId)->with('itens')->get();
+
+        if ($pedidos->isEmpty()) {
+            return response()->json(['message' => 'Nenhum pedido encontrado.'], 404);
+        }
+
+        // Retorne os pedidos
+        return response()->json($pedidos, 200);
+    }
 } 
