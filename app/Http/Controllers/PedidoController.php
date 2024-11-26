@@ -55,10 +55,15 @@ class PedidoController extends Controller
     public function getPedidos()
     {
         $usuarioId = Auth::id();
-        $pedidos = Pedido::where('USUARIO_ID', $usuarioId)
-            ->with(['itens.produto'])
+
+        // Obtenha todos os pedidos do usuário
+        $pedidos = Pedido::where('USUARIO_ID', $usuarioId)->pluck('id');
+
+        // Obtenha todos os itens de pedido associados aos pedidos do usuário
+        $itensPedido = PedidoItem::whereIn('PEDIDO_ID', $pedidos)
+            ->with('produto') // Carrega os produtos associados
             ->get();
 
-        return response()->json($pedidos, 200);
+        return response()->json($itensPedido, 200);
     }
 } 
