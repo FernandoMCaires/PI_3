@@ -35,7 +35,6 @@ class PedidoController extends Controller
         ]);
         $pedidoId = $pedido->id;
         
-        
         // Crie os itens do pedido
         foreach ($itensCarrinho as $item) {
             PedidoItem::create([
@@ -70,15 +69,11 @@ class PedidoController extends Controller
     public function getPedidos()
     {
         $usuarioId = Auth::id();
-
-        // Obtenha todos os pedidos do usuário
         $pedidos = Pedido::where('USUARIO_ID', $usuarioId)->with('itens')->get();
-
         if ($pedidos->isEmpty()) {
             return response()->json(['message' => 'Nenhum pedido encontrado.'], 404);
         }
-
-        // Retorne os pedidos
+        
         return response()->json($pedidos, 200);
     }
 } 

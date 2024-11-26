@@ -20,6 +20,6 @@ class PedidoItem extends Model
 
     public function pedido()
     {
-        return $this->belongsTo(Pedido::class, 'PEDIDO_ID');
+        return $this->belongsTo(Pedido::class, 'PEDIDO_ID', 'PEDIDO_ID');
     }
 }
