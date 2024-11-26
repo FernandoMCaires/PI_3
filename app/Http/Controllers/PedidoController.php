@@ -56,7 +56,7 @@ class PedidoController extends Controller
     {
         $usuarioId = Auth::id();
         $pedidos = Pedido::where('USUARIO_ID', $usuarioId)
-            ->with(['itens' => function($query) {
+            ->with(['produto.itens' => function($query) {
                 $query->with('produto');
             }])
             ->get();
