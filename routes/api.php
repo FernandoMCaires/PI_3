@@ -41,4 +41,7 @@ Route::middleware('auth:api')->group(function () {
 
     // Rota para editar dados do usuário
     Route::put('/user', [AuthenticatedSessionController::class, 'update']);
+
+    // Rota para listar todos os pedidos do usuário autenticado
+    Route::get('/pedidos', [PedidoController::class, 'getPedidos']);
 });
