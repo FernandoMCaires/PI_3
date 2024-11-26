@@ -57,7 +57,7 @@ class PedidoController extends Controller
         $usuarioId = Auth::id();
 
         // Obtenha todos os pedidos do usuário
-        $pedidos = Pedido::where('USUARIO_ID', $usuarioId)->pluck('id');
+        $pedidos = Pedido::where('USUARIO_ID', $usuarioId);
 
         // Obtenha todos os itens de pedido associados aos pedidos do usuário
         $itensPedido = PedidoItem::whereIn('PEDIDO_ID', $pedidos)
