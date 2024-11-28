@@ -22,4 +22,9 @@ class Pedido extends Model
     {
         return $this->hasMany(PedidoItem::class, 'PEDIDO_ID', 'PEDIDO_ID');
     }
+
+    public function status()
+    {
+        return $this->belongsTo(PedidoStatus::class, 'STATUS_ID', 'STATUS_ID');
+    }
 }

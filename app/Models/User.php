@@ -49,4 +49,9 @@ class User extends Authenticatable implements JWTSubject
         return []; // Retorna um array de dados personalizados, se necessário
     }
 
+    public function pedidosStatus()
+    {
+        return $this->hasMany(PedidoStatus::class, 'PRODUTO_ID');
+    }
+
 }

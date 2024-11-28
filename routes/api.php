@@ -12,7 +12,7 @@ use App\Http\Controllers\PedidoController;
 // Registro de novo usuário
 Route::post('/register', [RegisteredUserController::class, 'store']);
 // Login de usuário
-Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
 // Logout de usuário
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth:api');
 // Retorna o usuário autenticado
@@ -38,10 +38,12 @@ Route::middleware('auth:api')->group(function () {
     // Rotas de Pedidos
     Route::post('/pedido/finalizar', [PedidoController::class, 'finalizarPedido']);
     Route::get('/pedidos/{pedidoId}/itens', [PedidoController::class, 'getItensPorPedido']);
+    Route::get('/pedidos/{pedidoId}/status', [PedidoController::class, 'getStatus']);
 
     // Rota para editar dados do usuário
     Route::put('/user', [AuthenticatedSessionController::class, 'update']);
 
     // Rota para listar todos os pedidos do usuário autenticado
     Route::get('/pedidos', [PedidoController::class, 'getPedidos']);
+
 });

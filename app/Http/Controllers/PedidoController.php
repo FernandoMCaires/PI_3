@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Carrinho;
 use App\Models\Pedido;
 use App\Models\PedidoItem;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -69,11 +71,34 @@ class PedidoController extends Controller
     public function getPedidos()
     {
         $usuarioId = Auth::id();
-        $pedidos = Pedido::where('USUARIO_ID', $usuarioId)->with('itens')->get();
+        if (!$usuarioId) {
+            return response()->json(['message' => 'Usuário não autenticado.'], 401);
+        }
+
+        $pedidos = Pedido::where('USUARIO_ID', $usuarioId)
+            ->with(['itens.produto.imagens'])
+            ->get();
         if ($pedidos->isEmpty()) {
             return response()->json(['message' => 'Nenhum pedido encontrado.'], 404);
         }
         
         return response()->json($pedidos, 200);
+    }
+
+    public function getStatus($pedidoId)
+    {
+        $usuarioId = Auth::id();
+
+        try {
+            // Encontre o pedido pelo ID e verifique se pertence ao usuário
+            $pedido = Pedido::with('status')->where('PEDIDO_ID', $pedidoId)->where('USUARIO_ID', $usuarioId)->firstOrFail();
+
+            // Retorne o status do pedido
+            return response()->json(['status' => $pedido->status->STATUS_DESC ?? 'Status não encontrado.'], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Pedido não encontrado ou não pertence ao usuário.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erro ao buscar o status do pedido.', 'error' => $e->getMessage()], 500);
+        }
     }
 } 

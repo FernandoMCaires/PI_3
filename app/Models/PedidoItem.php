@@ -22,4 +22,14 @@ class PedidoItem extends Model
     {
         return $this->belongsTo(Pedido::class, 'PEDIDO_ID', 'PEDIDO_ID');
     }
+
+    public function produto()
+    {
+        return $this->belongsTo(Produto::class, 'PRODUTO_ID');
+    }
+
+    public function imagens()
+    {
+        return $this->hasManyThrough(ProdutoImagem::class, Produto::class, 'PRODUTO_ID', 'PRODUTO_ID');
+    }
 }
