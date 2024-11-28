@@ -76,7 +76,7 @@ class PedidoController extends Controller
         }
 
         $pedidos = Pedido::where('USUARIO_ID', $usuarioId)
-            ->with(['itens.produto.imagens'])
+            ->with(['itens.produto.imagens', 'status'])
             ->get();
         if ($pedidos->isEmpty()) {
             return response()->json(['message' => 'Nenhum pedido encontrado.'], 404);
