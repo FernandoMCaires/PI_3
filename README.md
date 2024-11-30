@@ -1,66 +1,157 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# API de E-commerce
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Esta é a API de um sistema de e-commerce. A API permite o gerenciamento de usuários, produtos, categorias, carrinhos de compras, endereços e pedidos.
 
-## About Laravel
+## Endpoints
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Autenticação
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+#### Registro de novo usuário
+- URL: `/register`
+- Método: `POST`
+- Descrição: Registra um novo usuário.
+- Parâmetros:
+  - `name` (string): Nome do usuário.
+  - `email` (string): Email do usuário.
+  - `password` (string): Senha do usuário.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+#### Login de usuário
+- URL: `/login`
+- Método: `POST`
+- Descrição: Realiza o login do usuário.
+- Parâmetros:
+  - `email` (string): Email do usuário.
+  - `password` (string): Senha do usuário.
 
-## Learning Laravel
+#### Logout de usuário
+- URL: `/logout`
+- Método: `POST`
+- Descrição: Realiza o logout do usuário.
+- Middleware: `auth:api`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### Retorna o usuário autenticado
+- URL: `/user`
+- Método: `GET`
+- Descrição: Retorna os dados do usuário autenticado.
+- Middleware: `auth:api`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Produtos
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### Listar todos os produtos
+- URL: `/produtos`
+- Método: `GET`
+- Descrição: Retorna uma lista de todos os produtos.
 
-## Laravel Sponsors
+#### Exibir um produto específico
+- URL: `/produtos/{id}`
+- Método: `GET`
+- Descrição: Retorna os detalhes de um produto específico.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Categorias
 
-### Premium Partners
+#### Listar todas as categorias
+- URL: `/categorias`
+- Método: `GET`
+- Descrição: Retorna uma lista de todas as categorias.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Endereços
 
-## Contributing
+#### Gerenciamento de endereços
+- URL: `/endereco`
+- Método: `GET`, `POST`, `PUT`, `DELETE`
+- Descrição: Endpoints para listar, criar, atualizar e deletar endereços.
+- Middleware: `auth:api`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Carrinho
 
-## Code of Conduct
+#### Atualizar o carrinho
+- URL: `/carrinho/atualiza`
+- Método: `POST`
+- Descrição: Adiciona ou atualiza um item no carrinho.
+- Parâmetros:
+  - `produto_id` (integer): ID do produto.
+  - `quantidade` (integer): Quantidade do produto.
+- Middleware: `auth:api`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Ver o carrinho
+- URL: `/carrinho`
+- Método: `GET`
+- Descrição: Retorna os itens do carrinho do usuário autenticado.
+- Middleware: `auth:api`
 
-## Security Vulnerabilities
+#### Remover item do carrinho
+- URL: `/carrinho/remover/{produtoId}`
+- Método: `DELETE`
+- Descrição: Remove um item do carrinho.
+- Middleware: `auth:api`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Pedidos
 
-## License
+#### Finalizar pedido
+-  URL `/pedido/finalizar`
+- Método: `POST`
+- Descrição: Finaliza o pedido a partir dos itens do carrinho.
+- Parâmetros:
+  - `endereco_id` (integer): ID do endereço de entrega.
+- Middleware: `auth:api`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Listar pedidos do usuário
+- URL: /pedidos
+- Método: `GET`
+- Descrição: Retorna uma lista de pedidos do usuário autenticado.
+- Middleware: `auth:api`
+
+## Instalação
+
+1. Clone o repositório:
+   ```sh
+   git clone https://github.com/seu-usuario/seu-repositorio.git
+   ```
+
+2. Instale as dependências:
+   ```sh
+   composer install
+   ```
+
+3. Configure o arquivo `.env`:
+   ```sh
+   cp .env.example .env
+   ```
+
+4. Gere a chave da aplicação:
+   ```sh
+   php artisan key:generate
+   ```
+
+5. Configure o banco de dados no arquivo `.env`.
+
+6. Execute as migrações:
+   ```sh
+   php artisan migrate
+   ```
+
+7. Inicie o servidor:
+   ```sh
+   php artisan serve
+   ```
+
+## Autenticação
+
+A API utiliza autenticação via token JWT. Após o login, o token deve ser incluído no cabeçalho das requisições protegidas:
+
+```sh
+Authorization: Bearer {seu_token}
+```
+
+## Contribuição
+
+1. Faça um fork do projeto.
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`).
+3. Commit suas mudanças (`git commit -am 'Adiciona nova feature'`).
+4. Faça o push para a branch (`git push origin feature/nova-feature`).
+5. Crie um novo Pull Request.
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
